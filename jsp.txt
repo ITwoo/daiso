@@ -1,0 +1,20 @@
+jsp : java server pages 자바로 작성한 서버 페이지
+  -- 답변(response)를 만들기 위해 요청(request)을 어떻게 처리할 것인지를 기술하는 텍스트기반의 문서
+
+servlet - 자바코드에 html ,ex) System.out.println("<HTML>Hello</HTML>");
+jsp - html 코드에 자바, ex) <HTML><%System.out.println("Hello");%></HTML>
+     - 플랫폼 독립성!!!  
+
+<% %>스크립트
+<%! %>선언
+<%= %>표현
+<%@ %>지시
+
+GET : URL에 정보를 넣어서 전송 보안취약 크기 1024제한
+POTS : 크기에 제한없이 전송가능 GET보다는! 보안이 우수
+request.setCharacterEncoding() - 한글깨짐현상 방지
+
+charset : 페이지를 요청하여 웹서버에서 응답하여 클라이언트가 페이지를 받았을 때의 인코딩
+pageEncoding : 내가 작성한 jsp페이지의 인코딩
+
+jsp 4가지 기본객체 : page, request, session, application
