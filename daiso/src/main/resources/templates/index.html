@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" 
+xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+
+<head>
+
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+  <meta name="description" content=""/>
+  <meta name="author" content=""/>
+
+  <title>Full Width Pics - Start Bootstrap Template</title>
+
+  <!-- Bootstrap core CSS -->
+  <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <script src="vendor/jquery/jquery.min.js"></script>
+
+  <!-- Custom styles for this template -->
+  <link href="css/full-width-pics.css" rel="stylesheet">
+
+<script>
+$(function() {
+  var a = $("#session").text();
+  
+});
+</script>
+</head>
+
+<body>
+<form id="logout" action="/logout" method="POST">
+   <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+</form>
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <div class="container">
+      <a class="navbar-brand" th:href="@{/}">Daiso Review Sharing</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarResponsive">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item active">
+            <a class="nav-link" th:href="@{/}">Home
+              <span class="sr-only">(current)</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" th:href="@{/board}">Board</a>
+          </li>
+          <li sec:authorize="!isAuthenticated()" class="nav-item">
+            <a class="nav-link" th:href="@{/login}">Login</a>
+          </li>
+          <li sec:authorize="isAuthenticated()" class="nav-item">
+            <a class="nav-link" onclick="document.getElementById('logout').submit();">Loout</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" th:href="@{/register}">Register</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Header - set the background image for the header in the line below -->
+  <!--<header class="py-5 bg-image-full" style="background-image: url('https://unsplash.it/1900/1080?image=1076');">-->
+  <header class="py-5 bg-image-full" style="background-image: url('images/upper.png');">
+    <!--<img class="img-fluid d-block mx-auto" src="http://placehold.it/200x200&text=Logo" alt="">-->
+    <img class="img-fluid d-block mx-auto" src="images/center.png" alt="">
+  </header>
+
+  <!-- Content section -->
+  <section class="py-5">
+    <div class="container">
+      <h1>Daiso Review HomePage</h1>
+      <p class="lead">여러분의 다이소 꿀템을 무엇인가요?</p>
+      <p>다이소 물품 후기 게시판에 여러분이 애용하는 것들을 업로드하여 공유해 보세요.</p>
+    </div>
+  </section>
+
+   <!-- Image element - set the background image for the header in the line below -->
+  <!--<div class="py-5 bg-image-full" style="background-image: url('https://unsplash.it/1900/1080?image=1081');">-->
+  <div class="py-5 bg-image-full" style="background-image: url('images/lower.png');">
+    <!-- Put anything you want here! There is just a spacer below for demo purposes! -->
+    <div style="height: 200px;"></div>
+  </div>
+
+  <!-- Content section -->
+  <section class="py-5">
+    <div class="container">
+      <h1>작년 매출 2조, 전국의 1400여개의 매장</h1>
+      <p class="lead">수만가지의 다이소 물품 중 최고의 가성비, 효옹성 아이템은?</p>
+      <p>평소에 아껴두고 있는 자신만의 다이소 물품을 올리고 의견들을 나눠보세요.</p>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="py-5 bg-dark">
+    <div class="container">
+      <p class="m-0 text-center text-white">Copyright &copy; Daiso Review Homepage 2020</p>
+    </div>
+    <!-- /.container -->
+  </footer>
+
+  <!-- Bootstrap core JavaScript -->
+  <script src="vendor/jquery/jquery.min.js"></script>
+  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"/>
+
+<head>
+  <meta name="_csrf" th:content="${_csrf.token}" />
+	<meta name="_csrf_header" th:content="${_csrf.headerName}" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <!-- <meta name="description" content="">
+  <meta name="author" content=""> -->
+
+  <title>Shop Item - Start Bootstrap Template</title>
+
+  <script src="vendor/jquery/jquery.min.js" type="text/javascript"></script>
+  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <!-- Bootstrap core CSS -->
+  <link href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <!-- <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" type="text/javascript"></script> -->
+  <!-- Custom styles for this template -->
+  <link href="/css/shop-item.css" rel="stylesheet">
+
+
+  <script>
+  var move = true;
+  var total=0;
+  var b_num = location.href.split("=")[1];
+  function list(){
+    
+    $.ajax({
+        url: "/review/" + b_num,
+        type: "GET",
+        dataType: "json",
+        success: function (data) {  //서버로부터 받은 데이터
+            var list = data.list;
+            var a = "";
+            $.each(list,function(key,value){
+              var date = value.r_date
+              var sysdate = date.substring(0,10).replace(/-/gi, "/");
+            a += "<div id="+ value.r_num +">"
+            a += "<p>"+value.r_comment +"</p>";
+            a += "<small class='text-muted'>"+ value.m_userid +"  on  "+sysdate+"</small>";
+            a += "<div style='text-align: right;'>";
+            a +="<a class='btn btn-primary' id='review_update' onclick='update(this)'>수정</a>"
+            a +="<a class='btn btn-danger' id='review_delete' onclick='de(this)'>삭제</a>"
+            a +="</div>";
+            a+="</div>"
+            a += "<hr>";
+            })
+            $("#review").html(a);
+        },
+        error: function (request, status, error) {
+
+        }
+      });
+  }
+  
+  function create(){
+    var token = $("meta[name='_csrf']").attr("content");
+		var header = $("meta[name='_csrf_header']").attr("content");
+    $.ajax({
+					url : '/review',
+					type : "POST",
+					data : JSON.stringify({ //서버로 보내는 데이터
+						"r_comment" : $("#r_comment").val(),
+						"b_num" : b_num,
+
+					}),
+					beforeSend: function(xhr){
+						xhr.setRequestHeader(header,token);
+					},
+					contentType : "application/json; charset=UTF-8",
+					dataType : "json",
+					success : function(data) { //서버에서 받는 데이터\
+						alert("댓글이 입력 되었습니다.")
+            list()
+            $("#r_comment").val("")
+					},
+					error : function(err) {
+						console.log(err);
+						//alert("error = " + err);
+					}
+				});
+  }
+
+
+
+function de(b){
+    var r_num = b.parentNode.parentNode.getAttribute("id");
+    var token = $("meta[name='_csrf']").attr("content");
+		var header = $("meta[name='_csrf_header']").attr("content");
+        $.ajax({
+        url: "/review/" + r_num,
+        type: "DELETE",
+        dataType: "json",
+        beforeSend: function(xhr){
+						xhr.setRequestHeader(header,token);
+					},
+        success: function (data) {  //서버로부터 받은 데이터
+            alert("삭제 되었습니다.")
+            list();
+        },
+        error: function (request, status, error) {
+          alert("code = " + request.tatus);
+          alert("message = " + request.responseText);
+          alert("error = " + error);
+        }
+      });
+  }
+
+function update(b){
+  var r_num = b.parentNode.parentNode.getAttribute("id");
+  
+}
+
+
+function load(num){
+        $.ajax({
+        url: "/data/" + num,
+        type: "GET",
+        dataType: "json",
+        success: function (data) {  //서버로부터 받은 데이터
+        total =0;
+        //현재 주소를 가져온다.
+var renewURL = location.href;
+//현재 주소 중 page 부분이 있다면 날려버린다.
+renewURL = renewURL.replace(/\#\?b_num=[0-9]+/ig,'');
+renewURL = renewURL.replace(/\?b_num=[0-9]+/ig,'');
+
+
+
+//새로 부여될 페이지 번호를 할당한다.
+// page는 ajax에서 넘기는 page 번호를 변수로 할당해주거나 할당된 변수로 변경
+renewURL += '?b_num='+num;
+ 
+//페이지 갱신 실행!
+history.pushState(null, null, renewURL);
+          var board = data.board;
+          var product = data.product;
+          $("#image").attr("src", product.p_img);
+          $(".card-title").text(board.b_title);
+          $(".p_price").text(product.p_price);
+          $(".card-text").text(board.b_writing);
+        },
+        error: function (request, status, error) {
+          if(move == true){
+            var next = parseInt(num)+1
+            total = total +1;
+            load(next)
+            var temp = next;
+
+          }else{
+            var prev = parseInt(num)-1
+            total = total +1;
+            load(prev)
+            var temp = prev;
+          }
+          if(total > 10){
+            total =0;
+            window.location.href='/detail?b_num='+b_num
+            alert("글이 존재하지 않습니다.")
+          }
+        }
+      });
+}
+  
+  </script>
+  <script>
+    $(function () {
+      list()
+      var b_num = location.href.split("=")[1];
+      // alert(location.href)
+      // alert(userid)
+      // alert("a")
+
+      load(b_num);
+
+      $("#update").click(function(){
+          window.location.href='/update/'+b_num
+      });
+
+      $("#delete").click(function(){
+          window.location.href='/delete/'+b_num
+      });
+      $("#create").click(function(){
+        create();
+        list();
+      });
+      $("#next").click(function(){
+        var next = parseInt(b_num)+1
+        move = true;
+        total = total +1;
+        load(next)
+      });
+      $("#prev").click(function(){
+        var prev = parseInt(b_num)-1
+        var move = false;
+        total = total +1;
+        load(prev)
+      });
+    });
+  </script>
+
+</head>
+
+<body>
+<form id="logout" action="/logout" method="POST">
+   <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+</form>
+  <!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <div class="container">
+      <a class="navbar-brand" th:href="@{/}">Daiso Review Sharing</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarResponsive">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item active">
+            <a class="nav-link" th:href="@{/}">Home
+              <span class="sr-only">(current)</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" th:href="@{/board}">Board</a>
+          </li>
+          <li sec:authorize="!isAuthenticated()" class="nav-item">
+            <a class="nav-link" th:href="@{/login}">Login</a>
+          </li>
+          <li sec:authorize="isAuthenticated()" class="nav-item">
+            <a class="nav-link" onclick="document.getElementById('logout').submit();">Loout</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" th:href="@{/register}">Register</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+
+
+
+  <!-- Page Content -->
+  <div class="container">
+
+    <div class="row">
+
+      <div class="col-lg-3">
+        <h1 class="my-4">Category</h1>
+        <div class="list-group">
+          <a id="prev" href="#" class="list-group-item active">이전글</a>
+          <a id="next" href="#" class="list-group-item">다음글</a>
+          <a href="/board" class="list-group-item">목록보기</a>
+        </div>
+      </div>
+      <!-- /.col-lg-3 -->
+
+      <div class="col-lg-9">
+        <div class="card mt-4">
+          <img class="card-img-top img-fluid" src="http://placehold.it/900x400" alt="" id="image">
+          <div class="card-body">
+            <h3 class="card-title">Product Name</h3>
+            <h4 class="p_price">$24.99</h4>
+            <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sapiente dicta fugit fugiat
+              hic aliquam itaque facere, soluta. Totam id dolores, sint aperiam sequi pariatur praesentium animi
+              perspiciatis molestias iure, ducimus!</p>
+            <span class="text-warning">&#9733; &#9733; &#9733; &#9733; &#9734;</span>
+            4.0 stars
+          </div>
+        </div>
+        <div style="text-align: right;"> 
+          <br>
+          <a id="delete" class="btn btn-danger">삭제</a>
+          <a id="update" class="btn btn-primary">수정</a>
+        </div>
+        <!-- /.card -->
+
+        <div class="card card-outline-secondary my-4">
+          <div class="card-header">
+            댓글
+          </div>
+          <div class="card-body">
+            <textarea id="r_comment" style="width: 100%" rows="3" cols="30"  name="comment"
+              placeholder="댓글을 입력하세요"></textarea>
+            
+            <div style="text-align: right;">
+             <a class="btn btn-success" id="create">등록</a>
+            </div>
+          <hr>
+        </div>
+        </div>
+  
+        <div class="card card-outline-secondary my-4">
+          <div class="card-header">
+            댓글
+          </div>
+          <div class="card-body" id="review">
+            <p></p>
+            <small class="text-muted"></small>
+            <hr>
+          </div>
+        </div>
+      </div>
+      <!-- /.card -->
+
+    </div>
+    <!-- /.col-lg-9 -->
+
+  </div>
+
+  </div>
+  <!-- /.container -->
+
+  <!-- Footer -->
+  <footer class="py-5 bg-dark">
+    <div class="container">
+      <p class="m-0 text-center text-white">Copyright &copy; Your Website 2020</p>
+    </div>
+    <!-- /.container -->
+  </footer>
+
+  <!-- Bootstrap core JavaScript -->
+
+
+</body>
+
+</html>

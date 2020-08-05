@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <title>Shop Item - Start Bootstrap Template</title>
+
+  <!-- Bootstrap core CSS -->
+  <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"></script>
+  <!-- Custom styles for this template -->
+  <link href="css/shop-item.css" rel="stylesheet">
+  <script>
+  $(document).ready(function () {
+    $(function(){
+      var userid = location.search.split("=")[1];
+      var src = 'localhost:8080/board/'+userid
+      window.location.href = src;
+      $.ajax({
+        url : "localhost:8080/board/" + userid,
+        type : "GET",
+        dataType : "json",
+        success : function(data){  //서버로부터 받은 데이터
+          var board = data.board;
+          var product = data.product;
+          $("#image").attr("src",product.p_img);
+          $(".card-title").text(board.b_title);
+          $(".p_price").text(product.p_price);
+          $(".card-text").text(board.b_writing);
+          
+        },
+        error : function(err){
+          alert("Error = " + err);
+        }
+      });
+      $("#btnDelete").bind("click", function(){
+        if(confirm("정말 탈퇴하시겠습니까?")){
+          $.ajax({
+            url : "http://192.168.56.3:8080/SpringBootRestAPIDemo/members/" + userid,
+            type : "DELETE",
+            dataType : "json",
+            success : function(data){  //서버로 부터 받은 데이터
+              alert(data.code);   //success
+              location.href = "/SpringBootRestAPIDemo/";
+            },
+            error : function(err){
+              alert("error = " + err);
+            }
+          });
+        }else{
+          history.go(0);
+        }
+      });
+    });
+  });
+  </script>
+
+</head>
+
+<body>
+
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+		<div class="container">
+		  <a class="navbar-brand" href="#">DAISO Review</a>
+		  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		  </button>
+		  <div class="collapse navbar-collapse" id="navbarResponsive">
+			<ul class="navbar-nav ml-auto">
+			  <li class="nav-item active">
+				<a class="nav-link" href="#">Home
+				  <span class="sr-only">(current)</span>
+				</a>
+			  </li>
+			  <li class="nav-item">
+				<a class="nav-link" href="#">Login</a>
+			  </li>
+			  <li class="nav-item">
+				<a class="nav-link" href="#">Register</a>
+			  </li>
+			  
+			</ul>
+		  </div>
+		</div>
+	  </nav>
+	
+			
+
+		
+  <!-- Page Content -->
+  <div class="container">
+
+    <div class="row">
+
+      <div class="col-lg-3">
+        <h1 class="my-4">Category</h1>
+        <div class="list-group">
+          <a href="#" class="list-group-item active">이전글</a>
+          <a href="#" class="list-group-item">다음글</a>
+          <a href="#" class="list-group-item">목록보기</a>
+        </div>
+      </div>
+      <!-- /.col-lg-3 -->
+
+      <div class="col-lg-9">
+
+        <div class="card mt-4">
+          <img class="card-img-top img-fluid" src="http://placehold.it/900x400" alt="" id="image">
+          <div class="card-body">
+            <h3 class="card-title">Product Name</h3>
+            <h4 class="p_price">$24.99</h4>
+            <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sapiente dicta fugit fugiat hic aliquam itaque facere, soluta. Totam id dolores, sint aperiam sequi pariatur praesentium animi perspiciatis molestias iure, ducimus!</p>
+            <span class="text-warning">&#9733; &#9733; &#9733; &#9733; &#9734;</span>
+            4.0 stars
+          </div>
+        </div>
+        <!-- /.card -->
+
+        <div class="card card-outline-secondary my-4">
+          <div class="card-header">
+            댓글 
+          </div>
+          <div class="card-body">
+            <textarea style="width: 780px" rows="3" cols="30" id="comment" name="comment" placeholder="댓글을 입력하세요"></textarea>
+            <small class="text-muted">Posted by Anonymous on 3/1/17  <div style="text-align: right;"> <a href="#" class="btn btn-info">등록</a></small></div>
+            <hr>
+            
+           
+          </div>
+        </div>
+        <!-- /.card -->
+
+      </div>
+      <!-- /.col-lg-9 -->
+
+    </div>
+
+  </div>
+  <!-- /.container -->
+
+  <!-- Footer -->
+  <footer class="py-5 bg-dark">
+    <div class="container">
+      <p class="m-0 text-center text-white">Copyright &copy; Your Website 2020</p>
+    </div>
+    <!-- /.container -->
+  </footer>
+
+  <!-- Bootstrap core JavaScript -->
+  <script src="vendor/jquery/jquery.min.js"></script>
+  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+</body>
+
+</html>
